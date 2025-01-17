@@ -1,3 +1,2 @@
 # .envファイルをgitの管理対象から外す
 .env
-db/__pycache__/*
