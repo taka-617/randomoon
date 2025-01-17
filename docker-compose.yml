@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  # MySQL
+  db:
+    image: mysql:5.7
+    container_name: mysql_host
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: randamoon
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci 
+    volumes:
+    - ./db/data:/var/lib/mysql
+    - ./log/mysql:/var/log/mysql
+    - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+    - 3306:3306
+    ## For static IP address
+    networks:
+      python_network:
+        ipv4_address: 192.168.2.2              
+
+## python3 
+  python3:
+    # restart: always
+    build:
+      context: ./python
+    container_name: "python3"
+    working_dir: "/root/src"
+    tty: true
+    volumes:
+      - ./python:/root/src
+    links:
+      - db 
+    networks:
+      - python_network
+
+networks: 
+  python_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+       - subnet: 192.168.2.0/24
+         gateway: 192.168.2.1

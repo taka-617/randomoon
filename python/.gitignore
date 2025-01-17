@@ -1,0 +1,4 @@
+# .envファイルをgitの管理対象から外す
+.env
+/python/db/__pycache__/*
+/db/data/*
